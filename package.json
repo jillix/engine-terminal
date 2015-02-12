@@ -18,7 +18,9 @@
   "clientDependencies": [
     "./main.js",
     "./text-size.js",
-    "./web-term.js"
+    "./web-term.js",
+    "./term.js",
+    "/jquery.js"
   ],
   "main": "server/index.js",
   "scripts": {

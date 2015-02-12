@@ -1,4 +1,5 @@
 var $ = require("/jquery");
+var Term = require("./term");
 
 /**
  * init
