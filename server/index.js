@@ -72,8 +72,8 @@ exports.createTerm = function (link) {
             case "data":
                 t && t.term.write(data.data);
                 break;
-            case "data":
-                t && t.term.resize.call(t.term, data.data);
+            case "resize":
+                t && t.term.resize.apply(t.term, data.data);
                 break;
         }
     });

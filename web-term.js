@@ -83,7 +83,7 @@ $.fn.webTerm = function (mod) {
         tab.open(win.$.get(0));
         tab.focus();
         tab.on("data", function (data) {
-            term.socket.send({
+            term.socket.send(null, {
                 type: "data",
                 data: data
             });
