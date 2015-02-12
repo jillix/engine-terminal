@@ -1,9 +1,10 @@
 var $ = require("/jquery");
+var Terminal = require("./term");
 
 // Web Term plugin
 $.fn.webTerm = function () {
     var $self = this;
-    var term = new EventEmitter;
+    var term = new Terminal.EventEmitter;
     var inherits = Terminal.inherits;
 
     term.updateSize = function () {
