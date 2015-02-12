@@ -9,8 +9,7 @@ var $ = require("/jquery");
  * @return {undefined}
  */
 exports.init = function () {
-    debugger
-    $("#terminal").webTerm();
+    $("#terminal").webTerm(this);
     this.ws = this.link("_clientConnected").send().data(function (err, data) {
         this.emit("data", err, data);
     }.bind(this));

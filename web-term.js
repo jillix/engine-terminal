@@ -2,7 +2,7 @@ var $ = require("/jquery");
 var Terminal = require("./term");
 
 // Web Term plugin
-$.fn.webTerm = function () {
+$.fn.webTerm = function (mod) {
     var $self = this;
     var term = new Terminal.EventEmitter;
     var inherits = Terminal.inherits;
@@ -12,7 +12,11 @@ $.fn.webTerm = function () {
         term.w.cols = tSize.x || Terminal.geometry[0];
         term.w.rows = tSize.y || Terminal.geometry[1];
 
-        term.socket.emit("resize", term.w.cols, term.w.rows);
+        term.socket.send(null, {
+            type: "resize",
+            data: [term.w.cols, term.w.rows]
+        });
+
         term.tab.resize(term.w.cols, term.w.rows);
     };
 
@@ -23,11 +27,11 @@ $.fn.webTerm = function () {
     });
 
     function openTerm() {
-        term.socket = io.connect();
+        term.socket = mod.link("_termComunication").send();
 
         // Initialize ui
         /// Create the window
-        var win = term.w = new EventEmitter;
+        var win = term.w = new Terminal.EventEmitter;
         win.$ = $self;
         win.$.addClass("webTerm-window");
 
@@ -50,35 +54,39 @@ $.fn.webTerm = function () {
             rows: win.rows
         });
 
-        // Create the terminal
-        term.socket.emit("create", win.cols, win.rows, function(err, data) {
+        term.socket.data(function(err, data) {
             if (err) return self._destroy();
-            $title.text(data.process);
-            term.emit("open tab", term);
-            term.emit("open");
-            term.updateSize();
+            switch (data.type) {
+                case "created":
+                    $title.text(data.process);
+                    term.emit("open tab", term);
+                    term.emit("open");
+                    term.updateSize();
+                    break;
+                case "data":
+                    tab.write(data.data);
+                    break;
+            }
         });
 
-        // Listen for connect
-        term.socket.on("connect", function() {
-            term.emit("connect");
+        // Create the terminal
+        term.socket.send(null, {
+            type: "create",
+            data: [win.cols, win.rows]
         });
+
+        term.emit("connect");
 
         // Listen for data
-        term.socket.on("data", function(data) {
-            tab.write(data);
-        });
 
         // Listen for kill event
-        term.socket.on("kill", function() {
-            window.close()
-        });
-
-
         tab.open(win.$.get(0));
         tab.focus();
         tab.on("data", function (data) {
-            term.socket.emit("data", data);
+            term.socket.send({
+                type: "data",
+                data: data
+            });
         });
 
         win.bind();

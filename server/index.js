@@ -1,59 +1,28 @@
-/**
- * Client
- * Creates a new `Client` instance.
- *
- * @name Client
- * @function
- * @param {Object} link The link object.
- * @param {Object} clients The clients object.
- * @param {Object} conf The configuration object.
- * @return {undefined}
- */
-function Client(link, clients, conf) {
-    this.id = link.id;
-    this.socket = link.socket;
-    this.clients = clients;
-    this.type = conf.type;
-    this.lnk = link;
+// Dependencies
+var Pty = require("pty.js");
 
-    this.on("close", function () {
-        this.clients[this.id] = null;
-    }.bind(this));
+function Term(options) {
+    this.term = Pty.fork(process.env.SHELL, [], {
+        name: options.name || "Browser Term",
+        cols: options.cols,
+        rows: options.rows,
+        cwd: options.cwd || process.env.HOME
+    });
 
-    link.data(function (err, data) {
-        if (err) { return this.emit("close"); }
-        switch (this.type) {
-            case "client":
-                // TODO
-                break;
-            case "session":
-                // TODO
-                break;
-            case "group":
-                // TODO
-                break;
-            default:
-                Object.keys(this.clients).forEach(function (c) {
-                    this.clients[c].lnk.send(err, data);
-                }.bind(this));
-                break;
-        }
+    this.term.on("data", function (data) {
+        options.link.send(null, {
+            type: "data",
+            data: data
+        });
+    });
 
-
-    }.bind(this));
+    this.term.on("close", function() {
+        options.link.end();
+        t.term.destroy();
+    });
 }
 
-/**
- * on
- * Listens for events.
- *
- * @name on
- * @function
- * @return {undefined}
- */
-Client.prototype.on = function () {
-    this.socket.on.apply(this, arguments);
-};
+
 
 /**
  * init
@@ -64,9 +33,8 @@ Client.prototype.on = function () {
  * @return {undefined}
  */
 exports.init = function () {
-    this.clients = {};
-    this.on("_clientConnected", engine.flow(this, [{
-        call: "_clientConnected"
+    this.on("_termComunication", engine.flow(this, [{
+        call: "createTerm"
     }]));
 };
 
@@ -79,6 +47,34 @@ exports.init = function () {
  * @param {Object} link The link object.
  * @return {undefined}
  */
-exports._clientConnected = function (link) {
-    this.clients[link.id] = new Client(link, this.clients, this._config);
+exports.createTerm = function (link) {
+    var t = null;
+    // Listen for data
+    link.data(function (err, data) {
+        if (!data) { return; }
+        switch (data.type) {
+            case "create":
+                if (!Array.isArray(data.data)) {
+                    data.data = [];
+                }
+
+                t = new Term({
+                    cols: data.data[0],
+                    rows: data.data[1],
+                    link: link
+                });
+
+                link.send(null, {
+                    type: "created"
+                  , process: t.term.process
+                });
+                break;
+            case "data":
+                t && t.term.write(data.data);
+                break;
+            case "data":
+                t && t.term.resize.call(t.term, data.data);
+                break;
+        }
+    });
 };
