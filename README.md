@@ -1,6 +1,5 @@
-# engine-web-sockets
+# engine-terminal
 The Swiss army knife for Engine Web Socket communication.
-
 
 ## Configuration
 ```js
@@ -8,10 +7,13 @@ The Swiss army knife for Engine Web Socket communication.
     "roles": {
         "*": true
     },
-    "name": "collab",
-    "module": "github.com|jillix|web-sockets|v0.0.1",
-    "config": {
-        "type": "all"
+    "name": "term",
+    "module": "github.com|jillix|engine-term|v0.0.1",
+    "client": {
+        "load": ["term"],
+        "config": {
+            "title": "Engine Terminal"
+        }
     }
 }
 ```

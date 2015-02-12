@@ -1,5 +1,5 @@
 {
-  "name": "engine-web-sockets",
+  "name": "engine-terminal",
   "version": "0.1.0",
   "description": "The Swiss army knife for Engine Web Socket communication.",
   "repository": {
@@ -10,7 +10,7 @@
     "page",
     "render"
   ],
-  "author": "jillix <contact@jillix.com> http://jillix.com",
+  "author": "jillix <contact@jillix.com>",
   "bugs": {
     "url": "https://github.com/jillix/engine-web-sockets/issues"
   },
