@@ -38,15 +38,6 @@ exports.init = function () {
     }]));
 };
 
-/**
- * _clientConnected
- * This function is called when a client is connected.
- *
- * @name _clientConnected
- * @function
- * @param {Object} link The link object.
- * @return {undefined}
- */
 exports.createTerm = function (link) {
     var t = null;
     // Listen for data
