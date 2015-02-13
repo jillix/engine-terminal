@@ -1,6 +1,9 @@
 // Dependencies
 var Pty = require("pty.js");
 
+const IN_EVENT = "_termComunication";
+const OUT_FUNC = "createTerm";
+
 function Term(options) {
     this.term = Pty.fork(process.env.SHELL, [], {
         name: options.name || "Browser Term",
@@ -33,12 +36,13 @@ function Term(options) {
  * @return {undefined}
  */
 exports.init = function () {
-    this.on("_termComunication", engine.flow(this, [{
-        call: "createTerm"
+    this._access[IN_EVENT] = true;
+    this.on(IN_EVENT, engine.flow(this, [{
+        call: OUT_FUNC
     }]));
 };
 
-exports.createTerm = function (link) {
+exports[OUT_FUNC] = function (link) {
     var t = null;
     // Listen for data
     link.data(function (err, data) {
