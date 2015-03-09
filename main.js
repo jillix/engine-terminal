@@ -9,5 +9,9 @@ var $ = require("/jquery");
  * @return {undefined}
  */
 exports.init = function () {
-    $("#terminal").webTerm(this);
+    this._term = $("#terminal").webTerm(this);
+};
+
+exports.focus = function () {
+    this._term.tab.focus();
 };
