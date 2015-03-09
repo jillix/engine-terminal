@@ -98,4 +98,6 @@ $.fn.webTerm = function (mod) {
 
     // Open the terminal
     openTerm();
+
+    return term;
 };
