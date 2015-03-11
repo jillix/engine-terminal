@@ -9,6 +9,9 @@ $.fn.webTerm = function (mod) {
 
     term.updateSize = function () {
         var tSize = $(".terminal").textSize();
+        // TODO This is a hack
+        tSize.y += 3;
+        tSize.x += 8;
         term.w.cols = tSize.x || Terminal.geometry[0];
         term.w.rows = tSize.y || Terminal.geometry[1];
 
