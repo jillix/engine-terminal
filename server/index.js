@@ -5,23 +5,25 @@ const IN_EVENT = "_termComunication";
 const OUT_FUNC = "createTerm";
 
 function Term(options) {
-    this.term = Pty.fork(process.env.SHELL, [], {
+    var self = this;
+
+    self.term = Pty.fork(process.env.SHELL, [], {
         name: options.name || "Browser Term",
         cols: options.cols,
         rows: options.rows,
         cwd: options.cwd || process.env.HOME
     });
 
-    this.term.on("data", function (data) {
+    self.term.on("data", function (data) {
         options.link.send(null, {
             type: "data",
             data: data
         });
     });
 
-    this.term.on("close", function() {
+    self.term.on("close", function() {
         options.link.end();
-        t.term.destroy();
+        self.term.destroy();
     });
 }
 
