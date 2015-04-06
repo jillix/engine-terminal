@@ -1,5 +1,5 @@
-# engine-terminal
-The Swiss army knife for Engine Web Socket communication.
+# Engine Trminal
+The web term version for Engine
 
 ## Configuration
 ```js
