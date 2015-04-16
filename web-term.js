@@ -96,7 +96,11 @@ $.fn.webTerm = function (mod) {
 
         term.emit("load");
         term.emit("open");
-        term.updateSize();
+
+        // TODO this is a hack
+        setTimeout(function() {
+            term.updateSize();
+        }, 1000);
     }
 
     // Open the terminal
