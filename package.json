@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "The web term version for Engine",
   "keywords": [
-    "page",
-    "render"
+    "terminal",
+    "jxengine"
   ],
   "author": "jillix <contact@jillix.com>",
   "components": {
