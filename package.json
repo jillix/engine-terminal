@@ -16,6 +16,14 @@
       "/jquery.js"
     ]
   },
+  "flow": [
+      {
+          "in": "termData",
+          "out": [{
+              "call": "termData"
+          }]
+      }
+  ],
   "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -30,7 +30,7 @@ $.fn.webTerm = function (mod) {
     });
 
     function openTerm() {
-        term.socket = mod.link("_termComunication").send();
+        term.socket = mod.link("termData").send();
 
         // Initialize ui
         /// Create the window
