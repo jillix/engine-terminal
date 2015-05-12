@@ -1,4 +1,4 @@
-# Engine Trminal
+# Engine Terminal
 The [web term](https://github.com/IonicaBizau/web-term) version for Engine
 
 ## Configuration
