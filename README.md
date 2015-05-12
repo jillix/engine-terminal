@@ -1,26 +1,24 @@
 # Engine Trminal
-The web term version for Engine
+The [web term](https://github.com/IonicaBizau/web-term) version for Engine
 
 ## Configuration
 ```js
 {
-    "roles": {
-        "*": true
-    },
-    "name": "term",
-    "module": "github.com|jillix|engine-term|v0.0.1",
-    "client": {
-        "load": ["term"],
-        "config": {
-            "title": "Engine Terminal"
-        }
-    }
+  "roles": {
+    "*": true
+  },
+  "name": "term",
+  "module": "engine-terminal"
 }
 ```
 
+## Public methods
+
+### `focus`
+Focuses the terminal instance.
+
 
 ## How to contribute
-
 1. File an issue in the repository, using the bug tracker, describing the
    contribution you'd like to make. This will help us to get you started on the
    right foot.
