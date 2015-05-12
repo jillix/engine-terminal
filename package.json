@@ -9,10 +9,10 @@
   "author": "jillix <contact@jillix.com>",
   "components": {
     "scripts": [
-      "main.js",
-      "text-size.js",
-      "web-term.js",
-      "term.js",
+      "client/index.js",
+      "client/text-size.js",
+      "client/web-term.js",
+      "client/term.js",
       "/jquery.js"
     ]
   },
