@@ -7,23 +7,6 @@
     "jxengine"
   ],
   "author": "jillix <contact@jillix.com>",
-  "components": {
-    "scripts": [
-      "client/index.js",
-      "client/text-size.js",
-      "client/web-term.js",
-      "client/term.js",
-      "/jquery.js"
-    ]
-  },
-  "flow": [
-      {
-          "in": "termData",
-          "out": [{
-              "call": "termData"
-          }]
-      }
-  ],
   "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -38,7 +21,37 @@
     "url": "https://github.com/jillix/engine-terminal.git"
   },
   "bugs": {
-    "url": "https://github.com/jillix/engine-terminal/issues"
+      "url": "https://github.com/jillix/engine-terminal/issues"
   },
-  "homepage": "https://github.com/jillix/engine-terminal"
+  "homepage": "https://github.com/jillix/engine-terminal",
+
+  "composition": {
+      "public": "public",
+      "flow": [
+          {
+              "on": "termData",
+              "call": "termData"
+          }
+      ],
+      "client": {
+          "config": {
+              "container": "#terminal"
+          },
+          "module": [
+              "client/index.js",
+              "client/text-size.js",
+              "client/web-term.js",
+              "client/term.js",
+              "/jquery.js"
+          ],
+          "flow": [
+              {
+                  "on":"termData",
+                  "call": "terminal/termData"
+              }
+          ],
+          "styles": ["public/term.css"],
+          "markup": []
+      }
+  }
 }

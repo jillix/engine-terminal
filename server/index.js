@@ -1,3 +1,7 @@
+
+// numelle variabilei: link -> stream
+// .send -> .write
+
 // Dependencies
 var Pty = require("pty.js");
 
@@ -11,46 +15,46 @@ function Term(options) {
     });
 
     self.term.on("data", function (data) {
-        options.link.send(null, {
+        options.stream.write(null, {
             type: "data",
             data: data
         });
     });
 
     self.term.on("close", function() {
-        options.link.end();
+        options.stream.end();
         self.term.destroy();
     });
 }
 
-exports.termData = function (link) {
+exports.termData = function (stream) {
     var t = null;
     // Listen for data
-    link.data(function (err, data) {
+    stream.data(function (err, data) {
         if (!data) { return; }
         switch (data.type) {
             case "create":
                 if (!Array.isArray(data.data)) {
-                    data.data = [];
-                }
+                data.data = [];
+            }
 
-                t = new Term({
-                    cols: data.data[0],
-                    rows: data.data[1],
-                    link: link
-                });
+            t = new Term({
+                cols: data.data[0],
+                rows: data.data[1],
+                stream: stream
+            });
 
-                link.send(null, {
-                    type: "created"
+            stream.write(null, {
+                type: "created"
                   , process: t.term.process
-                });
-                break;
+            });
+            break;
             case "data":
                 t && t.term.write(data.data);
-                break;
+            break;
             case "resize":
                 t && t.term.resize.apply(t.term, data.data);
-                break;
+            break;
         }
     });
 };

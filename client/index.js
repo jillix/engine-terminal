@@ -9,7 +9,8 @@ var $ = require("/jquery");
  * @return {undefined}
  */
 exports.init = function () {
-    this._term = $("#terminal").webTerm(this);
+    // Use config.container
+    this._term = $(this._config.container).webTerm(this);
 };
 
 exports.focus = function () {

@@ -15,7 +15,7 @@ $.fn.webTerm = function (mod) {
         term.w.cols = tSize.x || Terminal.geometry[0];
         term.w.rows = tSize.y || Terminal.geometry[1];
 
-        term.socket.send(null, {
+        term.socket.write(null, {
             type: "resize",
             data: [term.w.cols, term.w.rows]
         });
@@ -30,7 +30,9 @@ $.fn.webTerm = function (mod) {
     });
 
     function openTerm() {
-        term.socket = mod.link("termData").send();
+        term.socket = mod.flow({
+            "call": mod._name + "/termData"
+        });
 
         // Initialize ui
         /// Create the window
@@ -73,7 +75,7 @@ $.fn.webTerm = function (mod) {
         });
 
         // Create the terminal
-        term.socket.send(null, {
+        term.socket.write(null, {
             type: "create",
             data: [win.cols, win.rows]
         });
@@ -86,7 +88,8 @@ $.fn.webTerm = function (mod) {
         tab.open(win.$.get(0));
         tab.focus();
         tab.on("data", function (data) {
-            term.socket.send(null, {
+
+            term.socket.write(null, {
                 type: "data",
                 data: data
             });
