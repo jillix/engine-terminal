@@ -50,8 +50,7 @@
                   "call": "terminal/termData"
               }
           ],
-          "styles": ["public/term.css"],
-          "markup": []
+          "styles": ["public/term.css"]
       }
   }
 }
