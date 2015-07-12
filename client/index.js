@@ -9,7 +9,6 @@ var $ = require("/jquery");
  * @return {undefined}
  */
 exports.init = function () {
-    // Use config.container
     this._term = $(this._config.container).webTerm(this);
 };
 
