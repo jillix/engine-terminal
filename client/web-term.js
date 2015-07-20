@@ -30,9 +30,7 @@ $.fn.webTerm = function (mod) {
     });
 
     function openTerm() {
-        term.socket = mod.flow({
-            "call": mod._name + "/termData"
-        });
+        term.socket = mod.flow("termData");
 
         // Initialize ui
         /// Create the window
