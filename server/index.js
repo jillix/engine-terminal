@@ -1,5 +1,5 @@
 
-// numelle variabilei: link -> stream
+// numele variabilei: link -> stream
 // .send -> .write
 
 // Dependencies
