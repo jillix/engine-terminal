@@ -17,7 +17,7 @@ exports.init = function () {
     window.addEventListener("resize", function () {
         clearTimeout(_resizeTimer);
         _resizeTimer = setTimeout(function (){
-            self.updateSize(term);
+            self.updateSize(self.term);
         }, 100);
     });
 
@@ -41,7 +41,7 @@ exports.init = function () {
     self.socket.data(function(data) {
         switch (data.type) {
             case "created":
-            self.term.emit("open tab", term);
+            self.term.emit("open tab", self.term);
             self.term.emit("open");
             self.updateSize(self.term);
             break;
