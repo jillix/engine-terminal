@@ -1,5 +1,5 @@
 
-// numelle variabilei: link -> stream
+// numele variabilei: link -> stream
 // .send -> .write
 
 // Dependencies
@@ -29,8 +29,13 @@ function Term(options) {
 
 exports.termData = function (stream) {
     var t = null;
+
     // Listen for data
-    stream.data(function (err, data) {
+    stream.error(function (err) {
+       this.log("E", err);
+    });
+
+    stream.data(function (data) {
         if (!data) { return; }
         switch (data.type) {
             case "create":

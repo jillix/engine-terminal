@@ -40,17 +40,9 @@
           "module": [
               "client/index.js",
               "client/text-size.js",
-              "client/web-term.js",
-              "client/term.js",
-              "/jquery.js"
+              "client/term.js"
           ],
-          "styles": ["public/term.css"],
-          "flow": [
-              [
-                  "termData",
-                  ["link", "termData"]
-              ]
-          ]
+          "styles": ["public/term.css"]
       }
   }
 }
