@@ -42,13 +42,7 @@
               "client/text-size.js",
               "client/term.js"
           ],
-          "styles": ["public/term.css"],
-          "flow": [
-              [
-                  "termData",
-                  ["link", "termData"]
-              ]
-          ]
+          "styles": ["public/term.css"]
       }
   }
 }

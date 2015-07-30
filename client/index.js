@@ -3,177 +3,146 @@ var Terminal = require("./term");
 
 exports.init = function () {
     var self = this;
-    var targetDOM = document.querySelector(self._config.target || ".web-term");
-    if (!targetDOM) {
+    self.targetDOM = document.querySelector(self._config.target || ".web-term");
+
+    if (!self.targetDOM) {
         return self.log("E", "No DOM target found for terminal");
     }
 
     // Create terminal instance
-    self.term = new Terminal.EventEmitter;
 
     var _resizeTimer = null;
 
-    window.onresize = function () {
+    // Resize terminal window on browser window resize
+    window.addEventListener("resize", function () {
         clearTimeout(_resizeTimer);
         _resizeTimer = setTimeout(function (){
-            updateSize(term);
+            self.updateSize(term);
         }, 100);
-    }
+    });
 
-    // old code; question about code variants
-    // window.addEventListener("resize", function () {
-    //     clearTimeout(_resizeTimer);
-    //     _resizeTimer = setTimeout(function (){
-    //         updateSize(term);
-    //     }, 100);
-    // });
-    //
-    // $(window).on("resize", function () {
-    //     clearTimeout(_resizeTimer);
-    //     _resizeTimer = setTimeout(function (){
-    //         updateSize(term);
-    //     }, 100);
-    // });
-
-    var term = self.term;
-
-    term.socket = mod.flow("termData");
+    self.socket = self.flow([["link", "termData"]]);
 
     // Initialize ui
     /// Create the window
-    targetDOM.classList.add("webTerm-window");
-
-    term.bind = function () {
-        targetDOM.onmousedown (function(ev) {
-            term.tab.focus();
-        })
-        // old code;
-        // targetDOM.on("mousedown", function(ev) {
-        //     term.tab.focus();
-        // });
-    };
-
-    // TODO ask Johnny what is this about
-    // var $bar = $("<div>").addClass("bar");
-    // var $button = $("<div>").addClass("grip");
-    // var $title = $("<div>").addClass("title");
-    //
-    // $self.append($bar);
-    // $bar.append($title);
+    self.targetDOM.classList.add("webTerm-window");
 
     // Create the tab
-    var tab = term.tab = Terminal.call(term, {
-        cols: term.cols,
-        rows: term.rows
+    self.term = Terminal.call(new Terminal.EventEmitter, {
+        cols: self.cols,
+        rows: self.rows
     });
 
-    term.socket.data(function(err, data) {
-        if (err) return self._destroy();
+    self.socket.error(function(err) {
+        self.log('E', err);
+        // TODO self._destroy()
+    });
+
+    self.socket.data(function(data) {
         switch (data.type) {
             case "created":
-                $title.text(data.process);
-            term.emit("open tab", term);
-            term.emit("open");
-            self.updateSize();
+            self.term.emit("open tab", term);
+            self.term.emit("open");
+            self.updateSize(self.term);
             break;
             case "data":
-                tab.write(data.data);
+                self.term.write(data.data);
             break;
         }
     });
 
     // Create the terminal
-    term.socket.write(null, {
+    self.socket.write(null, {
         type: "create",
-        data: [term.cols, term.rows]
+        data: [self.cols, self.rows]
     });
 
-    term.emit("connect");
+    self.term.emit("connect");
 
     // Listen for data
 
     // Listen for kill event
-    tab.open(targetDOM);
-    tab.focus();
-    tab.on("data", function (data) {
+    self.term.open(self.targetDOM);
+    self.term.focus();
+    self.term.on("data", function (data) {
 
-        term.socket.write(null, {
+        self.socket.write(null, {
             type: "data",
             data: data
         });
     });
 
-    term.bind();
+    self.targetDOM.onmousedown = function(ev) {
+        self.term.focus();
+    };
 
-    term.emit("load");
-    term.emit("open");
+    self.term.emit("load");
+    self.term.emit("open");
 
     // TODO this is a hack
     setTimeout(function() {
-        updateSize();
+        self.updateSize();
     }, 1000);
 }
 
-function updateSize (term) {
-    var tSize = textSize(targetDOM);
+exports.updateSize = function updateSize () {
+    var self = this;
+    var tSize = textSize(self.targetDOM);
     // TODO This is a hack
     tSize.y += 3;
     tSize.x += 8;
-    term.cols = tSize.x || Terminal.geometry[0];
-    term.rows = tSize.y || Terminal.geometry[1];
+    self.cols = tSize.x || Terminal.geometry[0];
+    self.rows = tSize.y || Terminal.geometry[1];
 
-    term.socket.write(null, {
+    self.socket.write(null, {
         type: "resize",
-        data: [term.cols, term.rows]
+        data: [self.cols, self.rows]
     });
 
-    term.tab.resize(term.cols, term.rows);
+    self.term.resize(self.cols, self.rows);
 };
+
+// Gets the full width and height of a DOM element
+// full width/height includes width, padding, border, margin
+function getOuterDimensions (elementDOM) {
+    var width,
+        height;
+    var boundingBox = elementDOM.getBoundingClientRect();
+
+    // Get the width and height without margins
+    width = boundingBox.width;
+    height = boundingBox.height;
+
+    // Add margins to the width and height
+    var computed = getComputedStyle(elementDOM);
+    width = width + parseInt(computed.marginRight) + parseInt(computed.marginLeft);
+    height = height + parseInt(computed.marginTop) + parseInt(computed.marginBottom);
+
+    return {
+        width: width,
+        height: height
+    }
+}
 
 function textSize (targetDOM) {
     var self = this;
 
     var span = document.createElement("span");
-    var newContent = document.createTextNode("foo");
+    var newContent = document.createTextNode("o");
 
-    newDiv.appendChild(newContent);
+    span.appendChild(newContent);
+    targetDOM.children[0].appendChild(span)
 
-    targetDOM.children().first().append(span);
-    var charSize = {
-        width: span.outerWidth() / 3
-        , height: span.outerHeight()
-    };
+    var charSize = getOuterDimensions(span);
+    var targetSize = targetDOM.getBoundingClientRect();
+
     span.remove();
 
-    // old code
-    // var $span = $("<span>", { text: "foo" });
-    // targetDOM.children().first().append($span);
-    // var charSize = {
-    //     width: $span.outerWidth() / 3
-    //     , height: $span.outerHeight()
-    // };
-    // $span.remove();
-
     return {
-        x: Math.floor($self.width() / charSize.width)
-      , y: Math.floor($self.height() / charSize.height)
+        x: Math.floor(targetSize.width / charSize.width)
+      , y: Math.floor(targetSize.height / charSize.height)
     };
 };
-
-/**
- * initTerminal
- *
- * @name initTerminal
- * @function
- */
-// exports.redraw = function (str) {
-//     var self = this;
-//     str.data(function () {
-//         // TODO Redraw without reinit
-//         //exports.init.call(self);
-//         self._term = $(self._config.container).webTerm(self);
-//     });
-// };
 
 /**
  * focus
@@ -182,5 +151,5 @@ function textSize (targetDOM) {
  * @function
  */
 exports.focus = function () {
-    this.term.tab.focus();
+    this.term.focus();
 };
