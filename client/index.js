@@ -88,9 +88,9 @@ exports.init = function () {
 exports.updateSize = function updateSize () {
     var self = this;
     var tSize = textSize(self.targetDOM);
-    // TODO This is a hack
-    tSize.y += 3;
-    tSize.x += 8;
+    self.cols = tSize.x;
+    self.rows = tSize.y;
+
     self.cols = tSize.x || Terminal.geometry[0];
     self.rows = tSize.y || Terminal.geometry[1];
 
@@ -134,13 +134,13 @@ function textSize (targetDOM) {
     targetDOM.children[0].appendChild(span)
 
     var charSize = getOuterDimensions(span);
-    var targetSize = targetDOM.getBoundingClientRect();
+    var targetSize = getOuterDimensions(targetDOM);
 
     span.remove();
 
     return {
-        x: Math.floor(targetSize.width / charSize.width)
-      , y: Math.floor(targetSize.height / charSize.height)
+        x: Math.floor(targetSize.width / charSize.width),
+        y: Math.floor(targetSize.height / charSize.height)
     };
 };
 
