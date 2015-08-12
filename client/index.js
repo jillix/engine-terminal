@@ -21,7 +21,7 @@ exports.init = function () {
         }, 100);
     });
 
-    self.socket = self.flow([["link", "termData"]]);
+    self.socket = self.flow("termData");
 
     // Initialize ui
     /// Create the window

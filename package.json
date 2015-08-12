@@ -37,6 +37,7 @@
           "config": {
               "container": "#terminal"
           },
+	  "flow": [["termData", ["flow", "@termData"]]],
           "module": [
               "client/index.js",
               "client/text-size.js",
